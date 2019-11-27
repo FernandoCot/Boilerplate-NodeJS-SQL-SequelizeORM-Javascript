@@ -5,8 +5,8 @@ import express from 'express';
 import bodyParser from 'body-parser';
 
 // Components
-import { generateJWT } from './app/helpers/jwt';
-import { User } from './app/models';
+import { generateJWT } from './helpers/jwt';
+import { User } from './models';
 
 const app = express();
 
