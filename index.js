@@ -38,7 +38,7 @@ app.post('/users/sign_up', async (req, res) => {
 app.post('/users/login', async (req, res) => {
   let user;
   try {
-    user = await User.findOne({where: {email: req.body.email}});
+    user = await User.findOne({where: { email: req.body.email }});
     if (user && user.password == req.body.password) {
       res.json({
         name: user.name,
