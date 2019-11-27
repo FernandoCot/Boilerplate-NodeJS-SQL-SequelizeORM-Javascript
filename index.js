@@ -5,12 +5,12 @@ import express from 'express';
 import bodyParser from 'body-parser';
 
 // Components
-import { generateJWT } from './helpers/jwt';
-import { User } from './models';
+import { generateJWT } from './app/helpers/jwt';
+import { User } from './app/models';
 
 const app = express();
 
-app.use(express.urlencoded({extended: false}));
+app.use(express.urlencoded({ extended: false }));
 
 app.use(bodyParser.json());
 app.use(cors());
