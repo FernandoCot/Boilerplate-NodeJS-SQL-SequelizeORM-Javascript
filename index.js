@@ -5,8 +5,8 @@ import express from 'express';
 import bodyParser from 'body-parser';
 
 // Components
-import {generateJWT} from './app/helpers/jwt';
-import {User, Realtor, Property} from './app/models';
+import { generateJWT } from './app/helpers/jwt';
+import { User } from './app/models';
 
 const app = express();
 
@@ -27,7 +27,7 @@ app.post('/users/sign_up', async (req, res) => {
     res.json({
       name: user.name,
       email: user.email,
-      phone: user.phone && undefined,
+      phone: user.phone,
       token: generateJWT(user),
     });
   } catch (e) {
