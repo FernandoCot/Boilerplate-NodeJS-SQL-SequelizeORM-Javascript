@@ -5,8 +5,9 @@ import express from 'express';
 import bodyParser from 'body-parser';
 
 // Components
-import { generateJWT, verifyToken } from './app/helpers/jwt';
 import { User } from './app/models';
+import { encrypt, decrypt } from './app/helpers/encodeData';
+import { generateJWT, verifyToken } from './app/helpers/jwt';
 
 const app = express();
 
@@ -61,6 +62,33 @@ app.post('/validateToken', async (req, res) => {
     });
   } catch (e) {
     res.status(404).json('O token não existe ou está expirado.');
+  }
+});
+
+app.post('/encryptPass', async (req, res) => {
+  try {
+    const password = req.body.password;
+    const encryptResult = encrypt(password);
+    res.json({
+      password: {
+        encryptedData: encryptResult.encryptedData,
+        iv: encryptResult.iv,
+      }
+    })
+  } catch (e) {
+    res.status(404).json('Erro ao encriptar a senha!');
+  }
+});
+
+app.post('/decryptPass', async (req, res) => {
+  try {
+    const password = req.body.password;
+    const decryptResult = decrypt(password);
+    res.json({
+      password: decryptResult,
+    })
+  } catch (e) {
+    res.status(404).json('Erro ao decriptar a senha!');
   }
 });
 
