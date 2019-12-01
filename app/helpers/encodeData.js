@@ -1,5 +1,7 @@
 import crypto from 'crypto';
 
+// iv = Initialization Vector
+
 const key = crypto.randomBytes(32);
 const iv = crypto.randomBytes(16);
 
