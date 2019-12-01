@@ -5,7 +5,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 
 // Components
-import { generateJWT } from './app/helpers/jwt';
+import { generateJWT, verifyToken } from './app/helpers/jwt';
 import { User } from './app/models';
 
 const app = express();
@@ -27,7 +27,6 @@ app.post('/users/sign_up', async (req, res) => {
     res.json({
       name: user.name,
       email: user.email,
-      phone: user.phone,
       token: generateJWT(user),
     });
   } catch (e) {
@@ -43,12 +42,23 @@ app.post('/users/login', async (req, res) => {
       res.json({
         name: user.name,
         email: user.email,
-        phone: user.phone,
         token: generateJWT(user),
       });
     } else {
       res.status(404).json();
     }
+  } catch (e) {
+    res.status(404).json(e.errors);
+  }
+});
+
+app.post('/validateToken', async (req, res) => {
+  try {
+    const usertoken = req.headers.usertoken;
+    const tokenId = verifyToken(usertoken);
+    res.json({
+      id: tokenId.id,
+    });
   } catch (e) {
     res.status(404).json(e.errors);
   }
