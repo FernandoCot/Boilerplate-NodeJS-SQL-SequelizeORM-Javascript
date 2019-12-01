@@ -60,7 +60,7 @@ app.post('/validateToken', async (req, res) => {
       id: tokenId.id,
     });
   } catch (e) {
-    res.status(404).json(e.errors);
+    res.status(404).json('O token não existe ou está expirado.');
   }
 });
 
