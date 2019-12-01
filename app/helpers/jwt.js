@@ -14,4 +14,9 @@ const generateJWT = (user) => {
   return jwt.sign(payload, SECRET, signOptions);
 };
 
-export { generateJWT };
+const verifyToken = (usertoken) => {
+  const resp = jwt.verify(usertoken, SECRET);
+  return resp;
+}
+
+export { generateJWT, verifyToken };
