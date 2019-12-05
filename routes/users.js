@@ -85,4 +85,4 @@ router.post('/decryptPass', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;
