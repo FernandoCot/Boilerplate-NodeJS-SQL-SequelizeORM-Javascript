@@ -1,6 +1,6 @@
-
 // Core
 import cors from 'cors';
+import morgan from 'morgan';
 import express from 'express';
 import bodyParser from 'body-parser';
 
@@ -12,6 +12,7 @@ const app = express();
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
+app.use(morgan('dev'));
 
 // Calling Routes
 app.use('/users', routeUsers);
