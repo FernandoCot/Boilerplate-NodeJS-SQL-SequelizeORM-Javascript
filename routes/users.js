@@ -10,7 +10,15 @@ import { generateJWT, verifyToken } from '../app/helpers/jwt';
 // Requests
 
 router.get('/', async (req, res) => {
-  const users = await User.findAll();
+  const users = await User.findAll({
+    attributes: [
+      "id",
+      "name",
+      "email",
+      "createdAt",
+      "updatedAt",
+    ],
+  });
   res.json(users);
 });
 
