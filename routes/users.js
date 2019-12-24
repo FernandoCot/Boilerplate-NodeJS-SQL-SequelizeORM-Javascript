@@ -22,6 +22,20 @@ router.get('/', async (req, res) => {
   res.json(users);
 });
 
+router.get('/:id', async (req, res) => {
+  const singleUser = await User.findOne({
+    where: { id: req.params.id },
+    attributes: [
+      "id",
+      "name",
+      "email",
+      "createdAt",
+      "updatedAt",
+    ],
+  });
+  res.json(singleUser);
+});
+
 router.post('/sign_up', async (req, res) => {
   let user;
   try {
