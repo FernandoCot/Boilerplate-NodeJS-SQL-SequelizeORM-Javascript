@@ -24,7 +24,7 @@ app.use((req, res, next) => {
   next(erro);
 })
 
-// Generic error treatment (You can pass status and message error)
+// Generic error treatment (You can pass "status" and "message")
 app.use((erro, req, res, next) => {
   res.status(erro.status || 500);
   res.json({
