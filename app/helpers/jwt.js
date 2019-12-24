@@ -14,6 +14,7 @@ const generateJWT = (user) => {
   return jwt.sign(payload, SECRET, signOptions);
 };
 
+// The func below verifies if the token is still valid and/or if it exists
 const verifyToken = (usertoken) => {
   const resp = jwt.verify(usertoken, SECRET);
   return resp;

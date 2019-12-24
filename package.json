@@ -8,7 +8,7 @@
     "dev": "nodemon --exec babel-node index.js",
     "start": "babel-node index.js"
   },
-  "author": "",
+  "author": "Fernando Calixto de Oliveira",
   "license": "ISC",
   "dependencies": {
     "babel-cli": "^6.26.0",

@@ -1,10 +1,10 @@
-// Core
+// Importing Core
 import cors from 'cors';
 import morgan from 'morgan';
 import express from 'express';
 import bodyParser from 'body-parser';
 
-// Routes
+// Importing Routes
 import routeUsers from './routes/users';
 
 // Calling Configs
