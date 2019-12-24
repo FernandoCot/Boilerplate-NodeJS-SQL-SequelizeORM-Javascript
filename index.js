@@ -25,11 +25,12 @@ app.use((req, res, next) => {
 })
 
 // Generic error treatment (You can pass status and message error)
-app.use((error, req, res, next) => {
-  res.status(error.status || 500);
+app.use((erro, req, res, next) => {
+  res.status(erro.status || 500);
   res.json({
     erro: {
-      mensagem: error.message
+      status: erro.status || 500,
+      mensagem: erro.message,
     }
   })
 });
