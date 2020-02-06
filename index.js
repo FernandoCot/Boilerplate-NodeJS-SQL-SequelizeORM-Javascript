@@ -5,7 +5,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 
 // Importing Routes
-import routeUsers from './routes/users';
+import controllerUsers from './controllers/users';
 
 // Calling Configs
 const app = express();
@@ -15,7 +15,7 @@ app.use(cors());
 app.use(morgan('dev'));
 
 // Calling Routes
-app.use('/users', routeUsers);
+app.use('/users', controllerUsers);
 
 // Handling unmatched endpoints
 app.use((req, res, next) => {
