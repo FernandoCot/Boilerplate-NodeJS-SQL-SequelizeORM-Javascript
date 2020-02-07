@@ -9,7 +9,7 @@ import { generateJWT, verifyToken } from '../app/helpers/jwt';
 
 // Requests
 
-router.get('/', async (req, res) => {
+router.get('/', verifyToken, async (req, res) => {
   const users = await User.findAll({
     attributes: [
       "id",
@@ -22,7 +22,7 @@ router.get('/', async (req, res) => {
   res.json(users);
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', verifyToken, async (req, res) => {
   const singleUser = await User.findOne({
     where: { id: req.params.id },
     attributes: [
@@ -65,18 +65,6 @@ router.post('/login', async (req, res) => {
     }
   } catch (e) {
     res.status(404).json(e.errors);
-  }
-});
-
-router.post('/validateToken', async (req, res) => {
-  try {
-    const usertoken = req.headers.usertoken;
-    const tokenId = verifyToken(usertoken);
-    res.json({
-      id: tokenId.id,
-    });
-  } catch (e) {
-    res.status(404).json('O token não existe ou está expirado.');
   }
 });
 
