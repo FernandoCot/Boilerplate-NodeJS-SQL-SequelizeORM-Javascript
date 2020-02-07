@@ -73,10 +73,7 @@ router.post('/encryptPass', async (req, res) => {
     const password = req.body.password;
     const encryptResult = encrypt(password);
     res.json({
-      password: {
-        encryptedData: encryptResult.encryptedData,
-        iv: encryptResult.iv,
-      }
+      password: encryptResult
     })
   } catch (e) {
     res.status(404).json('Erro ao encriptar a senha!');
