@@ -70,8 +70,7 @@ router.post('/login', async (req, res) => {
 
 router.post('/encryptPass', async (req, res) => {
   try {
-    const password = req.body.password;
-    const encryptResult = encrypt(password);
+    const encryptResult = encrypt(req.body.password);
     res.json({
       password: encryptResult
     })
@@ -82,8 +81,7 @@ router.post('/encryptPass', async (req, res) => {
 
 router.post('/decryptPass', async (req, res) => {
   try {
-    const password = req.body.password;
-    const decryptResult = decrypt(password);
+    const decryptResult = decrypt(req.body.password);
     res.json({
       password: decryptResult,
     })
