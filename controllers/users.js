@@ -40,6 +40,15 @@ router.get('/:id', verifyToken, async (req, res) => {
   }
 });
 
+router.delete('/:id', verifyToken, async (req, res) => {
+  const deleteSingleUser = await User.destroy({ where: { id: req.params.id }});
+  if (deleteSingleUser) {
+    res.status(200).json('Usuário deletado com sucesso!');
+  } else {
+    res.status(404).json("Usuário inexistente!");
+  }
+});
+
 router.post('/sign_up', [
   body('name')
     .notEmpty().withMessage("O campo 'name' é obrigatório!"),
