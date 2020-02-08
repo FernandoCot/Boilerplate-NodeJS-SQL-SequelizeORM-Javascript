@@ -36,7 +36,7 @@ router.get('/:id', verifyToken, async (req, res) => {
   if (singleUser) {
     res.status(200).json(singleUser);
   } else {
-    res.status(404).json('Usuário inexistente!');
+    res.status(404).json("Usuário inexistente!");
   }
 });
 
@@ -45,7 +45,6 @@ router.post('/sign_up', [
     .notEmpty().withMessage("O campo 'name' é obrigatório!"),
   body('email')
     .notEmpty().withMessage("O campo 'email' é obrigatório!")
-    .isString().withMessage("O campo 'email' deve ser uma string!")
     .isEmail().withMessage("Email inválido!"),
   body('password')
     .notEmpty().withMessage("O campo 'senha' é obrigatório!")
@@ -75,26 +74,39 @@ router.post('/sign_up', [
   }
 });
 
-router.post('/login', async (req, res) => {
+router.post('/login', [
+  body('email')
+    .notEmpty().withMessage("O campo 'email' é obrigatório!")
+    .isEmail().withMessage("Email inválido!"),
+  body('password')
+    .notEmpty().withMessage("O campo 'senha' é obrigatório!")
+    .isString().withMessage("O campo 'senha' deve ser uma string!")
+    .isLength({ min: 8, max: 8 }).withMessage("A senha deve ter 8 dígitos!")
+], async (req, res) => {
   let user;
-  try {
-    user = await User.findOne({where: { email: req.body.email }});
-    if (user) {
-      const decryptedPass = await decrypt(req.body.password, user.password);
-      if (decryptedPass) {
-        res.json({
-          name: user.name,
-          email: user.email,
-          token: generateJWT(user),
-        });
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  } else {
+    try {
+      user = await User.findOne({where: { email: req.body.email }});
+      if (user) {
+        const decryptedPass = await decrypt(req.body.password, user.password);
+        if (decryptedPass) {
+          res.json({
+            name: user.name,
+            email: user.email,
+            token: generateJWT(user),
+          });
+        } else {
+          res.status(404).json('Informações incorretas!');
+        }
       } else {
-        res.status(404).json('Informações incorretas!');
+        res.status(404).json('Credenciais incorretas!');
       }
-    } else {
-      res.status(404).json('Credenciais incorretas!');
+    } catch (err) {
+      res.status(404).json(err.errors);
     }
-  } catch (err) {
-    res.status(404).json(err.errors);
   }
 });
 
