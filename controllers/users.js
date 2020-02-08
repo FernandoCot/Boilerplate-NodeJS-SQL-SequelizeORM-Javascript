@@ -58,14 +58,19 @@ router.post('/login', async (req, res) => {
   let user;
   try {
     user = await User.findOne({where: { email: req.body.email }});
-    if (user && user.password == req.body.password) {
-      res.json({
-        name: user.name,
-        email: user.email,
-        token: generateJWT(user),
-      });
+    if (user) {
+      const decryptedPass = await decrypt(req.body.password, user.password);
+      if (decryptedPass) {
+        res.json({
+          name: user.name,
+          email: user.email,
+          token: generateJWT(user),
+        });
+      } else {
+        res.status(404).json('Informações incorretas!');
+      }
     } else {
-      res.status(404).json();
+      res.status(404).json('Credenciais incorretas!');
     }
   } catch (e) {
     res.status(404).json(e.errors);
