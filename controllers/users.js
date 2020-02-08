@@ -49,8 +49,8 @@ router.post('/sign_up', async (req, res) => {
       email: user.email,
       token: generateJWT(user),
     });
-  } catch (e) {
-    res.status(422).json(e.errors)
+  } catch (err) {
+    res.status(422).json(err.errors)
   }
 });
 
@@ -72,8 +72,8 @@ router.post('/login', async (req, res) => {
     } else {
       res.status(404).json('Credenciais incorretas!');
     }
-  } catch (e) {
-    res.status(404).json(e.errors);
+  } catch (err) {
+    res.status(404).json(err.errors);
   }
 });
 
@@ -83,7 +83,7 @@ router.post('/encryptPass', async (req, res) => {
     res.json({
       password: encryptResult
     })
-  } catch (e) {
+  } catch (err) {
     res.status(404).json('Erro ao encriptar a senha!');
   }
 });
@@ -98,7 +98,7 @@ router.post('/decryptPass', async (req, res) => {
     } else {
       res.status(404).json('Senha incorreta!');
     }
-  } catch (e) {
+  } catch (err) {
     res.status(404).json('Erro ao decriptar a senha!');
   }
 });
