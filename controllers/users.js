@@ -19,7 +19,7 @@ router.get('/', verifyToken, async (req, res) => {
       "updatedAt",
     ],
   });
-  res.json(users);
+  res.status(200).json(users);
 });
 
 router.get('/:id', verifyToken, async (req, res) => {
@@ -95,7 +95,7 @@ router.post('/sign_up', [
         email: req.body.email,
         password: hashedPassword
       });
-      res.json({
+      res.status(201).json({
         name: user.name,
         email: user.email,
         token: generateJWT(user),
@@ -125,7 +125,7 @@ router.post('/login', [
       if (user) {
         const decryptedPass = await decrypt(req.body.password, user.password);
         if (decryptedPass) {
-          res.json({
+          res.status(200).json({
             name: user.name,
             email: user.email,
             token: generateJWT(user),
