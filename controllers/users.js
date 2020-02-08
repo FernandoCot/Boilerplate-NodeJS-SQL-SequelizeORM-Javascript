@@ -2,8 +2,9 @@
 import express from 'express';
 const router = express.Router();
 
-// Components
+// Models and Middlewares
 import { User } from '../app/models';
+import { body, validationResult } from 'express-validator';
 import { encrypt, decrypt } from '../app/helpers/encodeData';
 import { generateJWT, verifyToken } from '../app/helpers/jwt';
 
@@ -18,7 +19,7 @@ router.get('/', verifyToken, async (req, res) => {
       "updatedAt",
     ],
   });
-  res.json(users);
+  res.status(200).json(users);
 });
 
 router.get('/:id', verifyToken, async (req, res) => {
@@ -32,51 +33,116 @@ router.get('/:id', verifyToken, async (req, res) => {
       "updatedAt",
     ],
   });
-  res.json(singleUser);
+  if (singleUser) {
+    res.status(200).json(singleUser);
+  } else {
+    res.status(404).json("Usuário inexistente!");
+  }
 });
 
-router.post('/sign_up', async (req, res) => {
-  let user;
+router.delete('/:id', verifyToken, async (req, res) => {
+  const deleteSingleUser = await User.destroy({ where: { id: req.params.id }});
+  if (deleteSingleUser) {
+    res.status(200).json('Usuário deletado com sucesso!');
+  } else {
+    res.status(404).json("Usuário inexistente!");
+  }
+});
+
+router.patch('/:id', verifyToken, async (req, res) => {
   try {
     const hashedPassword = await encrypt(req.body.password);
-    user = await User.create({
-      name: req.body.name,
-      email: req.body.email,
-      password: hashedPassword
-    });
-    res.json({
-      name: user.name,
-      email: user.email,
-      token: generateJWT(user),
-    });
-  } catch (err) {
-    res.status(422).json(err.errors)
-  }
-});
-
-router.post('/login', async (req, res) => {
-  let user;
-  try {
-    user = await User.findOne({where: { email: req.body.email }});
-    if (user) {
-      const decryptedPass = await decrypt(req.body.password, user.password);
-      if (decryptedPass) {
-        res.json({
-          name: user.name,
-          email: user.email,
-          token: generateJWT(user),
-        });
-      } else {
-        res.status(404).json('Informações incorretas!');
-      }
-    } else {
-      res.status(404).json('Credenciais incorretas!');
+    const updateSingleUser = await User.update(
+      {
+        name: req.body.name,
+        email: req.body.email,
+        password: hashedPassword
+      },
+      { where: { id: req.params.id } }
+    );
+    if (Boolean(...updateSingleUser)) {
+      res.status(200).json('Usuário atualizado com sucesso!');
     }
-  } catch (err) {
-    res.status(404).json(err.errors);
+    else {
+      res.status(404).json("Usuário inexistente!");
+    }
+  }
+  catch (err) {
+    res.status(404).json("Usuário inexistente!");
   }
 });
 
+router.post('/sign_up', [
+  body('name')
+    .notEmpty().withMessage("O campo 'name' é obrigatório!"),
+  body('email')
+    .notEmpty().withMessage("O campo 'email' é obrigatório!")
+    .isEmail().withMessage("Email inválido!"),
+  body('password')
+    .notEmpty().withMessage("O campo 'senha' é obrigatório!")
+    .isString().withMessage("O campo 'senha' deve ser uma string!")
+    .isLength({ min: 8, max: 8 }).withMessage("A senha deve ter 8 dígitos!")
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  } else {
+    let user;
+    try {
+      const hashedPassword = await encrypt(req.body.password);
+      user = await User.create({
+        name: req.body.name,
+        email: req.body.email,
+        password: hashedPassword
+      });
+      res.status(201).json({
+        name: user.name,
+        email: user.email,
+        token: generateJWT(user),
+      });
+    } catch (err) {
+      res.status(422).json(err.errors)
+    }
+  }
+});
+
+router.post('/login', [
+  body('email')
+    .notEmpty().withMessage("O campo 'email' é obrigatório!")
+    .isEmail().withMessage("Email inválido!"),
+  body('password')
+    .notEmpty().withMessage("O campo 'senha' é obrigatório!")
+    .isString().withMessage("O campo 'senha' deve ser uma string!")
+    .isLength({ min: 8, max: 8 }).withMessage("A senha deve ter 8 dígitos!")
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  } else {
+    let user;
+    try {
+      user = await User.findOne({where: { email: req.body.email }});
+      if (user) {
+        const decryptedPass = await decrypt(req.body.password, user.password);
+        if (decryptedPass) {
+          res.status(200).json({
+            name: user.name,
+            email: user.email,
+            token: generateJWT(user),
+          });
+        } else {
+          res.status(404).json('Informações incorretas!');
+        }
+      } else {
+        res.status(404).json('Credenciais incorretas!');
+      }
+    } catch (err) {
+      res.status(404).json(err.errors);
+    }
+  }
+});
+
+/*
 router.post('/encryptPass', async (req, res) => {
   try {
     const encryptResult = await encrypt(req.body.password);
@@ -102,5 +168,6 @@ router.post('/decryptPass', async (req, res) => {
     res.status(404).json('Erro ao decriptar a senha!');
   }
 });
+*/
 
 export default router;
