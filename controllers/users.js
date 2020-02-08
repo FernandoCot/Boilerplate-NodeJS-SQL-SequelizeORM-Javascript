@@ -8,7 +8,6 @@ import { encrypt, decrypt } from '../app/helpers/encodeData';
 import { generateJWT, verifyToken } from '../app/helpers/jwt';
 
 // Requests
-
 router.get('/', verifyToken, async (req, res) => {
   const users = await User.findAll({
     attributes: [
@@ -39,7 +38,12 @@ router.get('/:id', verifyToken, async (req, res) => {
 router.post('/sign_up', async (req, res) => {
   let user;
   try {
-    user = await User.create(req.body);
+    const hashedPassword = await encrypt(req.body.password);
+    user = await User.create({
+      name: req.body.name,
+      email: req.body.email,
+      password: hashedPassword
+    });
     res.json({
       name: user.name,
       email: user.email,
