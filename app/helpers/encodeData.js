@@ -1,26 +1,15 @@
-import crypto from 'crypto';
+import bcrypt from 'bcrypt';
 
-// iv = Initialization Vector
+const saltRounds = 10;
 
-const key = crypto.randomBytes(32);
-const iv = crypto.randomBytes(16);
+const encrypt = async (password) => {
+  const hashedPass = await bcrypt.hash(password, saltRounds)
+  return hashedPass
+}
 
-const encrypt = (password) => {
-  let cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(key), iv);
-  let encrypted = cipher.update(password);
-  encrypted = Buffer.concat([encrypted, cipher.final()]);
-
-  return { iv: iv.toString('hex'), encryptedData: encrypted.toString('hex') };
-};
-
-const decrypt = (password) => {
-  let iv = Buffer.from(password.iv, 'hex');
-  let encryptedPassword = Buffer.from(password.encryptedData, 'hex');
-  let decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(key), iv);
-  let decrypted = decipher.update(encryptedPassword);
-  decrypted = Buffer.concat([decrypted, decipher.final()]);
-
-  return decrypted.toString();
+const decrypt = async (password, hash) => {
+  const unhashedPassword = await bcrypt.compare(password, hash)
+  return unhashedPassword
 };
 
 export { encrypt, decrypt };

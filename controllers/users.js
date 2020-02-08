@@ -8,7 +8,6 @@ import { encrypt, decrypt } from '../app/helpers/encodeData';
 import { generateJWT, verifyToken } from '../app/helpers/jwt';
 
 // Requests
-
 router.get('/', verifyToken, async (req, res) => {
   const users = await User.findAll({
     attributes: [
@@ -39,7 +38,12 @@ router.get('/:id', verifyToken, async (req, res) => {
 router.post('/sign_up', async (req, res) => {
   let user;
   try {
-    user = await User.create(req.body);
+    const hashedPassword = await encrypt(req.body.password);
+    user = await User.create({
+      name: req.body.name,
+      email: req.body.email,
+      password: hashedPassword
+    });
     res.json({
       name: user.name,
       email: user.email,
@@ -54,14 +58,19 @@ router.post('/login', async (req, res) => {
   let user;
   try {
     user = await User.findOne({where: { email: req.body.email }});
-    if (user && user.password == req.body.password) {
-      res.json({
-        name: user.name,
-        email: user.email,
-        token: generateJWT(user),
-      });
+    if (user) {
+      const decryptedPass = await decrypt(req.body.password, user.password);
+      if (decryptedPass) {
+        res.json({
+          name: user.name,
+          email: user.email,
+          token: generateJWT(user),
+        });
+      } else {
+        res.status(404).json('Informações incorretas!');
+      }
     } else {
-      res.status(404).json();
+      res.status(404).json('Credenciais incorretas!');
     }
   } catch (e) {
     res.status(404).json(e.errors);
@@ -70,13 +79,9 @@ router.post('/login', async (req, res) => {
 
 router.post('/encryptPass', async (req, res) => {
   try {
-    const password = req.body.password;
-    const encryptResult = encrypt(password);
+    const encryptResult = await encrypt(req.body.password);
     res.json({
-      password: {
-        encryptedData: encryptResult.encryptedData,
-        iv: encryptResult.iv,
-      }
+      password: encryptResult
     })
   } catch (e) {
     res.status(404).json('Erro ao encriptar a senha!');
@@ -85,11 +90,14 @@ router.post('/encryptPass', async (req, res) => {
 
 router.post('/decryptPass', async (req, res) => {
   try {
-    const password = req.body.password;
-    const decryptResult = decrypt(password);
-    res.json({
-      password: decryptResult,
-    })
+    const decryptResult = await decrypt(req.body.password, '$2b$10$lMRDR.K617JeKxI0UOJf8.qVMlkCFEpIkvH9uZ2EDMJxOAq6RsFWy');
+    if (decryptResult) {
+      res.json({
+        password: req.body.password,
+      })
+    } else {
+      res.status(404).json('Senha incorreta!');
+    }
   } catch (e) {
     res.status(404).json('Erro ao decriptar a senha!');
   }
