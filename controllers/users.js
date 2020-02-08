@@ -51,11 +51,11 @@ router.post('/sign_up', [
     .isString().withMessage("O campo 'senha' deve ser uma string!")
     .isLength({ min: 8, max: 8 }).withMessage("A senha deve ter 8 dígitos!")
 ], async (req, res) => {
-  let user;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   } else {
+    let user;
     try {
       const hashedPassword = await encrypt(req.body.password);
       user = await User.create({
@@ -83,11 +83,11 @@ router.post('/login', [
     .isString().withMessage("O campo 'senha' deve ser uma string!")
     .isLength({ min: 8, max: 8 }).withMessage("A senha deve ter 8 dígitos!")
 ], async (req, res) => {
-  let user;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   } else {
+    let user;
     try {
       user = await User.findOne({where: { email: req.body.email }});
       if (user) {
