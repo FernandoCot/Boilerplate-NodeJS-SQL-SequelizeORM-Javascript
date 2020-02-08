@@ -70,7 +70,7 @@ router.post('/login', async (req, res) => {
 
 router.post('/encryptPass', async (req, res) => {
   try {
-    const encryptResult = encrypt(req.body.password);
+    const encryptResult = await encrypt(req.body.password);
     res.json({
       password: encryptResult
     })
@@ -81,10 +81,14 @@ router.post('/encryptPass', async (req, res) => {
 
 router.post('/decryptPass', async (req, res) => {
   try {
-    const decryptResult = decrypt(req.body.password);
-    res.json({
-      password: decryptResult,
-    })
+    const decryptResult = await decrypt(req.body.password, '$2b$10$lMRDR.K617JeKxI0UOJf8.qVMlkCFEpIkvH9uZ2EDMJxOAq6RsFWy');
+    if (decryptResult) {
+      res.json({
+        password: req.body.password,
+      })
+    } else {
+      res.status(404).json('Senha incorreta!');
+    }
   } catch (e) {
     res.status(404).json('Erro ao decriptar a senha!');
   }
