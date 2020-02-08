@@ -33,7 +33,11 @@ router.get('/:id', verifyToken, async (req, res) => {
       "updatedAt",
     ],
   });
-  res.json(singleUser);
+  if (singleUser) {
+    res.status(200).json(singleUser);
+  } else {
+    res.status(404).json('Usuário inexistente!');
+  }
 });
 
 router.post('/sign_up', [
