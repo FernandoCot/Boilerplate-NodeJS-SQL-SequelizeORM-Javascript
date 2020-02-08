@@ -1,10 +1,10 @@
 // Core
 import express from 'express';
 const router = express.Router();
-import { body, validationResult } from 'express-validator';
 
-// Components
+// Models and Middlewares
 import { User } from '../app/models';
+import { body, validationResult } from 'express-validator';
 import { encrypt, decrypt } from '../app/helpers/encodeData';
 import { generateJWT, verifyToken } from '../app/helpers/jwt';
 
@@ -110,6 +110,7 @@ router.post('/login', [
   }
 });
 
+/*
 router.post('/encryptPass', async (req, res) => {
   try {
     const encryptResult = await encrypt(req.body.password);
@@ -135,5 +136,6 @@ router.post('/decryptPass', async (req, res) => {
     res.status(404).json('Erro ao decriptar a senha!');
   }
 });
+*/
 
 export default router;
