@@ -1,7 +1,7 @@
 // Core
 import express from 'express';
 const router = express.Router();
-import { check, validationResult } from 'express-validator';
+import { body, validationResult } from 'express-validator';
 
 // Components
 import { User } from '../app/models';
@@ -37,16 +37,16 @@ router.get('/:id', verifyToken, async (req, res) => {
 });
 
 router.post('/sign_up', [
-  check('name')
+  body('name')
     .notEmpty().withMessage("O campo 'name' é obrigatório!"),
-  check('email')
+  body('email')
     .notEmpty().withMessage("O campo 'email' é obrigatório!")
     .isString().withMessage("O campo 'email' deve ser uma string!")
     .isEmail().withMessage("Email inválido!"),
-  check('password')
+  body('password')
     .notEmpty().withMessage("O campo 'senha' é obrigatório!")
-    .isLength({ min: 8, max: 8 }).withMessage("A senha deve ter 8 dígitos!")
     .isString().withMessage("O campo 'senha' deve ser uma string!")
+    .isLength({ min: 8, max: 8 }).withMessage("A senha deve ter 8 dígitos!")
 ], async (req, res) => {
   let user;
   const errors = validationResult(req);
