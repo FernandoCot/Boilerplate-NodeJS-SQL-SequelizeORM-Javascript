@@ -49,6 +49,29 @@ router.delete('/:id', verifyToken, async (req, res) => {
   }
 });
 
+router.patch('/:id', verifyToken, async (req, res) => {
+  try {
+    const hashedPassword = await encrypt(req.body.password);
+    const updateSingleUser = await User.update(
+      {
+        name: req.body.name,
+        email: req.body.email,
+        password: hashedPassword
+      },
+      { where: { id: req.params.id } }
+    );
+    if (Boolean(...updateSingleUser)) {
+      res.status(200).json('Usuário atualizado com sucesso!');
+    }
+    else {
+      res.status(404).json("Usuário inexistente!");
+    }
+  }
+  catch (err) {
+    res.status(404).json("Usuário inexistente!");
+  }
+});
+
 router.post('/sign_up', [
   body('name')
     .notEmpty().withMessage("O campo 'name' é obrigatório!"),
