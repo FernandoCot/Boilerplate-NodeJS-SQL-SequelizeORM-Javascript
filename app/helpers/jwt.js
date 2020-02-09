@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-const SECRET = 'CALIXTOOOOOOO';
+const SECRET = 'AH9SHASHUAUHDUHSUHSADHAHUSDHU';
 
 var signOptions = {
   expiresIn: "12h",
