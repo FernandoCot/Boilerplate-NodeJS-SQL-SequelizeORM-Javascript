@@ -1,6 +1,4 @@
-const app = require('../../index');
-const request = require('supertest');
-const User = require('../../app/models/user');
+const { User } = require('../../app/models');
 const { encrypt } = require('../../app/helpers/encodeData');
 
 describe('users', () => {
@@ -8,18 +6,9 @@ describe('users', () => {
     const hashedPassword = await encrypt('12345678');
     const createTest = await User.create({
       name: 'Teste',
-      email: 'Teste@teste.com',
+      email: 'Teste27@teste.com',
       password: hashedPassword
     });
-
-    const response = await request(app)
-      .post("/sign_up")
-      .send({
-        name: createTest.name,
-        email: createTest.email,
-        password: createTest.password
-      });
-
-    expect(response.status).toBe(200);
+    expect(createTest).toBeTruthy();
   });
 });
