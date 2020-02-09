@@ -89,17 +89,22 @@ router.post('/sign_up', [
   } else {
     let user;
     try {
-      const hashedPassword = await encrypt(req.body.password);
-      user = await User.create({
-        name: req.body.name,
-        email: req.body.email,
-        password: hashedPassword
-      });
-      res.status(201).json({
-        name: user.name,
-        email: user.email,
-        token: generateJWT(user),
-      });
+      const existUser = await User.findOne({where: { email: req.body.email }});
+      if (existUser) {
+        res.status(409).json('Esse email já está sendo usado!');
+      } else {
+        const hashedPassword = await encrypt(req.body.password);
+        user = await User.create({
+          name: req.body.name,
+          email: req.body.email,
+          password: hashedPassword
+        });
+        res.status(201).json({
+          name: user.name,
+          email: user.email,
+          token: generateJWT(user),
+        });
+      }
     } catch (err) {
       res.status(422).json(err.errors)
     }
