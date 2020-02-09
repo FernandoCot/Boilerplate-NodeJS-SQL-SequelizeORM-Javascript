@@ -23,8 +23,7 @@ router.get('/', verifyToken, async (req, res) => {
 });
 
 router.get('/:id', verifyToken, async (req, res) => {
-  const singleUser = await User.findOne({
-    where: { id: req.params.id },
+  const singleUser = await User.findByPk((req.params.id), {
     attributes: [
       "id",
       "name",
