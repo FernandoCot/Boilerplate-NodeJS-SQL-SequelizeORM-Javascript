@@ -27,4 +27,10 @@ const verifyToken = (req, res, next) => {
   });
 }
 
-export { generateJWT, verifyToken };
+const decodeJWT = (token) => {
+  const decoded = jwt.verify(token, SECRET);
+  // console.log(decoded)
+  return decoded;
+}
+
+export { generateJWT, verifyToken, decodeJWT };
