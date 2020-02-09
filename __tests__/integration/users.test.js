@@ -1,5 +1,7 @@
-import { User } from '../../app/models/user';
-import { encrypt } from '../../app/helpers/encodeData';
+const app = require('../../index');
+const request = require('supertest');
+const User = require('../../app/models/user');
+const { encrypt } = require('../../app/helpers/encodeData');
 
 describe('users', () => {
   it('should create a new user', async () => {
@@ -8,9 +10,16 @@ describe('users', () => {
       name: 'Teste',
       email: 'Teste@teste.com',
       password: hashedPassword
-    })
+    });
 
-    console.log(createTest)
-    expect(createTest.name).toBe('Teste');
+    const response = await request(app)
+      .post("/sign_up")
+      .send({
+        name: createTest.name,
+        email: createTest.email,
+        password: createTest.password
+      });
+
+    expect(response.status).toBe(200);
   });
 });
