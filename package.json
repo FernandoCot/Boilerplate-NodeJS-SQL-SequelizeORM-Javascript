@@ -1,5 +1,5 @@
 {
-  "name": "testingnodeapi",
+  "name": "api_boilerplate_nodejs",
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
@@ -24,9 +24,13 @@
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.9.1",
     "pg": "^7.12.1",
-    "sequelize": "^5.13.0"
+    "sequelize": "^5.13.0",
+    "supertest": "^4.0.2"
   },
   "devDependencies": {
+    "@babel/core": "^7.8.4",
+    "@babel/preset-env": "^7.8.4",
+    "babel-jest": "^25.1.0",
     "eslint": "^5.16.0",
     "nodemon": "^1.18.10",
     "sequelize-cli": "^5.5.0"
