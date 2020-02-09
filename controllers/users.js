@@ -73,7 +73,8 @@ router.patch('/:id', verifyToken, async (req, res) => {
 
 router.post('/sign_up', [
   body('name')
-    .notEmpty().withMessage("O campo 'name' é obrigatório!"),
+    .notEmpty().withMessage("O campo 'nome' é obrigatório!")
+    .isString().withMessage("O campo 'nome' deve ser uma string!"),
   body('email')
     .notEmpty().withMessage("O campo 'email' é obrigatório!")
     .isEmail().withMessage("Email inválido!"),
