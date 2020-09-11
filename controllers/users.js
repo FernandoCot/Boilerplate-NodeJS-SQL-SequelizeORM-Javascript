@@ -44,7 +44,7 @@ router.get('/:id', verifyToken, async (req, res) => {
       res.status(404).json("Usuário inexistente!");
     }
   } catch(err) {
-    res.status(404).json("Usuário inexistente!");
+    res.status(500)
     console.log(err)
   }
 });
@@ -58,7 +58,7 @@ router.delete('/:id', verifyToken, async (req, res) => {
       res.status(404).json("Usuário inexistente!");
     }
   } catch(err) {
-    res.status(404).json("Usuário inexistente!");
+    res.status(500)
     console.log(err)
   }
 });
@@ -82,7 +82,7 @@ router.patch('/:id', verifyToken, async (req, res) => {
     }
   }
   catch (err) {
-    res.status(404).json("Usuário inexistente!");
+    res.status(500)
   }
 });
 
