@@ -10,41 +10,56 @@ import { generateJWT, verifyToken } from '../app/helpers/jwt';
 
 // Requests
 router.get('/', verifyToken, async (req, res) => {
-  const users = await User.findAll({
-    attributes: [
-      "id",
-      "name",
-      "email",
-      "createdAt",
-      "updatedAt",
-    ],
-  });
-  res.status(200).json(users);
+  try {
+    const users = await User.findAll({
+      attributes: [
+        "id",
+        "name",
+        "email",
+        "createdAt",
+        "updatedAt",
+      ],
+    });
+    res.status(200).json(users);
+  } catch(err) {
+    res.status(500)
+    console.log(err)
+  }
 });
 
 router.get('/:id', verifyToken, async (req, res) => {
-  const singleUser = await User.findByPk((req.params.id), {
-    attributes: [
-      "id",
-      "name",
-      "email",
-      "createdAt",
-      "updatedAt",
-    ],
-  });
-  if (singleUser) {
-    res.status(200).json(singleUser);
-  } else {
+  try {
+    const singleUser = await User.findByPk((req.params.id), {
+      attributes: [
+        "id",
+        "name",
+        "email",
+        "createdAt",
+        "updatedAt",
+      ],
+    });
+    if (singleUser) {
+      res.status(200).json(singleUser);
+    } else {
+      res.status(404).json("Usuário inexistente!");
+    }
+  } catch(err) {
     res.status(404).json("Usuário inexistente!");
+    console.log(err)
   }
 });
 
 router.delete('/:id', verifyToken, async (req, res) => {
-  const deleteSingleUser = await User.destroy({ where: { id: req.params.id }});
-  if (deleteSingleUser) {
-    res.status(200).json('Usuário deletado com sucesso!');
-  } else {
+  try {
+    const deleteSingleUser = await User.destroy({ where: { id: req.params.id }});
+    if (deleteSingleUser) {
+      res.status(200).json('Usuário deletado com sucesso!');
+    } else {
+      res.status(404).json("Usuário inexistente!");
+    }
+  } catch(err) {
     res.status(404).json("Usuário inexistente!");
+    console.log(err)
   }
 });
 
