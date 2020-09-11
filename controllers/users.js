@@ -22,7 +22,7 @@ router.get('/', verifyToken, async (req, res) => {
     });
     res.status(200).json(users);
   } catch(err) {
-    res.status(500)
+    res.status(500).end();
     console.log(err)
   }
 });
@@ -44,7 +44,7 @@ router.get('/:id', verifyToken, async (req, res) => {
       res.status(404).json("Usuário inexistente!");
     }
   } catch(err) {
-    res.status(500)
+    res.status(500).end();
     console.log(err)
   }
 });
@@ -58,7 +58,7 @@ router.delete('/:id', verifyToken, async (req, res) => {
       res.status(404).json("Usuário inexistente!");
     }
   } catch(err) {
-    res.status(500)
+    res.status(500).end();
     console.log(err)
   }
 });
@@ -82,7 +82,7 @@ router.patch('/:id', verifyToken, async (req, res) => {
     }
   }
   catch (err) {
-    res.status(500)
+    res.status(500).end();
   }
 });
 
