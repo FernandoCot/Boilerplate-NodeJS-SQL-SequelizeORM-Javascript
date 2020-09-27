@@ -4,9 +4,9 @@ const router = express.Router();
 
 // Models and Middlewares
 import { User } from '../app/models';
-import { body, validationResult } from 'express-validator';
 import { encrypt, decrypt } from '../app/helpers/encodeData';
 import { generateJWT, verifyToken } from '../app/helpers/jwt';
+import { param, body, validationResult } from 'express-validator';
 
 // Requests
 router.get('/', verifyToken, async (req, res) => {
@@ -27,63 +27,95 @@ router.get('/', verifyToken, async (req, res) => {
   }
 });
 
-router.get('/:id', verifyToken, async (req, res) => {
-  try {
-    const singleUser = await User.findByPk((req.params.id), {
-      attributes: [
-        "id",
-        "name",
-        "email",
-        "createdAt",
-        "updatedAt",
-      ],
-    });
-    if (singleUser) {
-      res.status(200).json(singleUser);
-    } else {
-      res.status(404).json("Usuário inexistente!");
-    }
-  } catch(err) {
-    res.status(500).end();
-    console.log(err)
-  }
+router.get('/:id', [
+    verifyToken,
+    param('id')
+      .notEmpty().withMessage("O parâmetro 'id' é obrigatório!")
+      .isInt().withMessage("O parâmetro 'id' deve ser um inteiro!"),
+  ], async (req, res) => {
+    const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      } else {
+        try {
+          const singleUser = await User.findByPk((req.params.id), {
+            attributes: [
+              "id",
+              "name",
+              "email",
+              "createdAt",
+              "updatedAt",
+            ],
+          });
+          if (singleUser) {
+            res.status(200).json(singleUser);
+          } else {
+            res.status(404).json("Usuário inexistente!");
+          }
+        } catch(err) {
+          res.status(500).end();
+          console.log(err)
+        }
+      }
 });
 
-router.delete('/:id', verifyToken, async (req, res) => {
-  try {
-    const deleteSingleUser = await User.destroy({ where: { id: req.params.id }});
-    if (deleteSingleUser) {
-      res.status(200).json('Usuário deletado com sucesso!');
-    } else {
-      res.status(404).json("Usuário inexistente!");
-    }
-  } catch(err) {
-    res.status(500).end();
-    console.log(err)
-  }
+router.delete('/:id',
+  [
+    verifyToken,
+    param('id')
+      .notEmpty().withMessage("O parâmetro 'id' é obrigatório!")
+      .isInt().withMessage("O parâmetro 'id' deve ser um inteiro!"),
+  ], async (req, res) => {
+    const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      } else {
+        try {
+          const deleteSingleUser = await User.destroy({ where: { id: req.params.id } });
+          if (deleteSingleUser) {
+            res.status(200).json('Usuário deletado com sucesso!');
+          } else {
+            res.status(404).json("Usuário inexistente!");
+          }
+        } catch(err) {
+          res.status(500).end();
+          console.log(err)
+        }
+      }
 });
 
-router.patch('/:id', verifyToken, async (req, res) => {
-  try {
-    const hashedPassword = await encrypt(req.body.password);
-    const updateSingleUser = await User.update(
-      {
-        name: req.body.name,
-        email: req.body.email,
-        password: hashedPassword
-      },
-      { where: { id: req.params.id } }
-    );
-    if (Boolean(...updateSingleUser)) {
-      res.status(200).json('Usuário atualizado com sucesso!');
-    }
-    else {
-      res.status(404).json("Usuário inexistente!");
-    }
-  }
-  catch (err) {
-    res.status(500).end();
-  }
+router.patch('/:id',
+  [
+    verifyToken,
+    param('id')
+      .notEmpty().withMessage("O parâmetro 'id' é obrigatório!")
+      .isInt().withMessage("O parâmetro 'id' deve ser um inteiro!"),
+  ], async (req, res) => {
+    const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      } else {
+        try {
+          const hashedPassword = await encrypt(req.body.password);
+          const updateSingleUser = await User.update(
+            {
+              name: req.body.name,
+              email: req.body.email,
+              password: hashedPassword
+            },
+            { where: { id: req.params.id } }
+          );
+          if (Boolean(...updateSingleUser)) {
+            res.status(200).json('Usuário atualizado com sucesso!');
+          }
+          else {
+            res.status(404).json("Usuário inexistente!");
+          }
+        }
+        catch (err) {
+          res.status(500).end();
+        }
+      }
 });
 
 router.post('/sign_up', [
@@ -104,7 +136,7 @@ router.post('/sign_up', [
   } else {
     let user;
     try {
-      const existUser = await User.findOne({where: { email: req.body.email }});
+      const existUser = await User.findOne({ where: { email: req.body.email } });
       if (existUser) {
         res.status(409).json('Esse email já está sendo usado!');
       } else {
@@ -141,7 +173,7 @@ router.post('/login', [
   } else {
     let user;
     try {
-      user = await User.findOne({where: { email: req.body.email }});
+      user = await User.findOne({ where: { email: req.body.email } });
       if (user) {
         const decryptedPass = await decrypt(req.body.password, user.password);
         if (decryptedPass) {
