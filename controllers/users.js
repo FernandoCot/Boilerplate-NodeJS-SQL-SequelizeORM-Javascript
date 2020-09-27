@@ -162,32 +162,4 @@ router.post('/login', [
   }
 });
 
-/*
-router.post('/encryptPass', async (req, res) => {
-  try {
-    const encryptResult = await encrypt(req.body.password);
-    res.json({
-      password: encryptResult
-    })
-  } catch (err) {
-    res.status(404).json('Erro ao encriptar a senha!');
-  }
-});
-
-router.post('/decryptPass', async (req, res) => {
-  try {
-    const decryptResult = await decrypt(req.body.password, '$2b$10$lMRDR.K617JeKxI0UOJf8.qVMlkCFEpIkvH9uZ2EDMJxOAq6RsFWy');
-    if (decryptResult) {
-      res.json({
-        password: req.body.password,
-      })
-    } else {
-      res.status(404).json('Senha incorreta!');
-    }
-  } catch (err) {
-    res.status(404).json('Erro ao decriptar a senha!');
-  }
-});
-*/
-
 export default router;
