@@ -146,14 +146,13 @@ router.post('/sign_up',
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     } else {
-      let user;
       try {
         const existUser = await User.findOne({ where: { email: req.body.email } });
         if (existUser) {
           res.status(409).json('Esse email já está sendo usado!');
         } else {
           const hashedPassword = await encrypt(req.body.password);
-          user = await User.create({
+          const user = await User.create({
             name: req.body.name,
             email: req.body.email,
             password: hashedPassword
@@ -184,9 +183,8 @@ router.post('/login',
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     } else {
-      let user;
       try {
-        user = await User.findOne({ where: { email: req.body.email } });
+        const user = await User.findOne({ where: { email: req.body.email } });
         if (user) {
           const decryptedPass = await decrypt(req.body.password, user.password);
           if (decryptedPass) {
