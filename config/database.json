@@ -1,0 +1,16 @@
+{
+  "development": {
+    "username": "nodeapi",
+    "password": "123456",
+    "database": "nodeapi",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "udkrhjft",
+    "password": "g1HQ_SiuUPrnLOsDg4cqgCnazfLOx6fl",
+    "database": "udkrhjft",
+    "host": "salt.db.elephantsql.com",
+    "dialect": "postgres"
+  }
+}
