@@ -2,15 +2,14 @@
 import cors from 'cors';
 import morgan from 'morgan';
 import express from 'express';
-import bodyParser from 'body-parser';
 
 // Importing Routes
 import controllerUsers from './controllers/users';
 
 // Calling Configs
 const app = express();
+app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(bodyParser.json());
 app.use(cors());
 app.use(morgan('dev'));
 
