@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
     "start": "babel-node index.js",
+    "test": "jest --detectOpenHandles",
     "dev": "nodemon --exec babel-node index.js"
   },
   "author": "Fernando Calixto de Oliveira",
