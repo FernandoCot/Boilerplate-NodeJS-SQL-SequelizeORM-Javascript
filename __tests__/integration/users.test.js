@@ -1,5 +1,5 @@
-const { User } = require('../../app/models');
-const { encrypt } = require('../../app/helpers/encodeData');
+import { User } from '../../app/models';
+import { encrypt } from '../../app/helpers/encodeData';
 
 describe('users', () => {
   it('should create a new user', async (done) => {
@@ -8,13 +8,14 @@ describe('users', () => {
       const hashedPassword = await encrypt('12345678');
       const randomString = Math.random().toString(36).substr(2, 9);
       createTest = await User.create({
-        name: 'Teste',
+        name: 'UserTest',
         email: `${randomString}@gmail.com`,
         password: hashedPassword
       });
       expect(createTest).toBeTruthy();
       done();
-    } catch {
+    } catch (err) {
+      console.log(err);
       expect(createTest).toBeFalsy();
       done();
     }
