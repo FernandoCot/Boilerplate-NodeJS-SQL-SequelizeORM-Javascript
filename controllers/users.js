@@ -1,12 +1,14 @@
 // Core
-import express from 'express';
-const router = express.Router();
+import { Router } from 'express';
 
 // Models and Middlewares
 import { User } from '../app/models';
 import { encrypt, decrypt } from '../app/helpers/encodeData';
 import { generateJWT, verifyToken } from '../app/helpers/jwt';
 import { param, body, validationResult } from 'express-validator';
+
+// Instances
+const router = Router();
 
 // Requests
 router.get('/', verifyToken, async (req, res) => {
