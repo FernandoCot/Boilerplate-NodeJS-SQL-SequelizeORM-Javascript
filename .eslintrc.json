@@ -12,6 +12,7 @@
     },
     "rules": {
         "no-console": "off",
+        "import/order": "off",
         "no-else-return": "off",
         "linebreak-style": "off",
         "newline-per-chained-call": "off"
