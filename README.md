@@ -1,8 +1,9 @@
 Boilerplate NodeJS API - by Fernando Calixto
-
 (Current Stack: ExpressJS, Sequelize ORM and PostgreSQL)
 
-Create a local postgres DB using docker to test the API:
+Follow the steps below to run and test the API:
+
+1 - Create a local postgres DB using docker
 
 ```
 $ sudo docker run --name nodeapi -e POSTGRES_PASSWORD=123456 -e POSTGRES_DB=nodeapi -e POSTGRES_USER=nodeapi -p 5432:5432 -d postgres
@@ -10,6 +11,12 @@ $ sudo docker run --name nodeapi -e POSTGRES_PASSWORD=123456 -e POSTGRES_DB=node
 
 PS: If you rather, in the "database.json" file, you can setup different database connections before running (development, test and production).
 
-After creating the database and starting the container, install the dependencies using "yarn".
+2 - After creating the database and starting the docker container, install the dependencies using "yarn" or "npm"
 
-With all the dependencies installed, you can run the server either in development mode using "yarn dev" or in production mode using "yarn start".
+3 - Run the migrations
+
+```
+$ npx sequelize-cli db:migrate
+```
+
+4 - Now, you can run the server either in development mode using "yarn/npm dev" or in production mode using "yarn/npm start".
