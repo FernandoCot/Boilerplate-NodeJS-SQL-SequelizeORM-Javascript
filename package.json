@@ -7,7 +7,7 @@
     "start": "babel-node index.js",
     "test": "jest --detectOpenHandles",
     "dev": "nodemon --exec babel-node index.js",
-    "lint": "eslint --ext .js,.ts app controllers database index.js"
+    "lint": "eslint --ext .js,.ts app/helpers controllers index.js"
   },
   "author": "Fernando Calixto de Oliveira",
   "license": "ISC",
