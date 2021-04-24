@@ -21,17 +21,17 @@ app.use((req, res, next) => {
   const erro = new Error('Rota não encontrada');
   erro.status = 404;
   next(erro);
-})
+});
 
 // Generic error treatment (You can pass "status" and "message")
-app.use((erro, req, res, next) => {
+app.use((erro, req, res) => {
   res.status(erro.status || 500);
   res.json({
     erro: {
       status: erro.status || 500,
       mensagem: erro.message,
-    }
-  })
+    },
+  });
 });
 
 const PORT = process.env.PORT || 3000;
